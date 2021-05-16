@@ -266,4 +266,9 @@ internal class MemberRepoTest {
         //when
         val findMember = memberRepo.findLockByUsername("member1")
     }
+
+    @Test
+    fun testCallCustom(){
+        val findMemberCustom = memberRepo.findMemberCustom()
+    }
 }

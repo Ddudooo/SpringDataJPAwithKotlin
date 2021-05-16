@@ -15,7 +15,7 @@ import java.util.*
 import javax.persistence.LockModeType
 import javax.persistence.QueryHint
 
-interface MemberRepo: JpaRepository<Member, Long> {
+interface MemberRepo: JpaRepository<Member, Long>, MemberRepoCustom {
     fun findByUsernameAndAgeGreaterThan(username :String, age: Int) :List<Member>
 
     //관례상 엔티티.NamedQuery명 을 찾아 호출, 없을시 메소드 이름으로 쿼리호출
