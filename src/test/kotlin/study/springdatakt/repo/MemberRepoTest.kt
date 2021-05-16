@@ -6,12 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.transaction.annotation.Transactional
 import study.springdatakt.entity.Member
+import study.springdatakt.entity.Team
 
 @SpringBootTest
 @Transactional
 internal class MemberRepoTest {
     @Autowired
     lateinit var memberRepo: MemberRepo
+
+    @Autowired
+    lateinit var teamRepo: TeamRepo
 
     @Test
     fun testMember(){
@@ -97,6 +101,38 @@ internal class MemberRepoTest {
         for(member in result){
             assertThat(member.username).isEqualTo("AAA")
             assertThat(member.age).isEqualTo(10)
+        }
+    }
+
+    @Test
+    fun testQueryUsername() {
+        val member1 = Member("AAA", 10)
+        val member2 = Member("BBB",20)
+        memberRepo.save(member1)
+        memberRepo.save(member2)
+
+        val result = memberRepo.findUsernameList()
+
+        for(username in result){
+            assertThat(username).isNotNull
+        }
+    }
+
+    @Test
+    fun testQueryDto() {
+        val teamA = Team("teamA")
+        teamRepo.save(teamA)
+        val member1 = Member("AAA", 10,teamA)
+        val member2 = Member("BBB",20,teamA)
+        memberRepo.save(member1)
+        memberRepo.save(member2)
+
+        val result = memberRepo.findMemberDto()
+
+        for(dto in result){
+            assertThat(dto.id).isNotNull
+            assertThat(dto.username).isIn("AAA","BBB")
+            assertThat(dto.teamName).isEqualTo("teamA")
         }
     }
 }
