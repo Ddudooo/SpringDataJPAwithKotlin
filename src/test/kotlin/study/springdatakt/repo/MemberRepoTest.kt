@@ -7,9 +7,10 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.transaction.annotation.Transactional
-import study.springdatakt.dto.MemberDto
 import study.springdatakt.entity.Member
 import study.springdatakt.entity.Team
+import javax.persistence.EntityManager
+import javax.persistence.PersistenceContext
 
 @SpringBootTest
 @Transactional
@@ -19,6 +20,9 @@ internal class MemberRepoTest {
 
     @Autowired
     lateinit var teamRepo: TeamRepo
+
+    @PersistenceContext
+    lateinit var em : EntityManager
 
     @Test
     fun testMember(){
@@ -185,5 +189,56 @@ internal class MemberRepoTest {
         //then
         assertThat(page.content.size).isEqualTo(3)
         assertThat(page.totalElements).isEqualTo(5)
+    }
+
+    @Test
+    fun testBulkUpdate() {
+        //given
+        memberRepo.save(Member("member1", 10))
+        memberRepo.save(Member("member2", 19))
+        memberRepo.save(Member("member3", 20))
+        memberRepo.save(Member("member4", 21))
+        memberRepo.save(Member("member5", 40))
+
+        //when
+        val resultCount = memberRepo.bulkAgePlus(20)
+        //em.clear()
+
+        val findMember = memberRepo.findByUsername("member5")
+        for(member in findMember){
+            println("member ${member.username} ${member.age}")
+        }
+
+        //then
+        assertThat(resultCount).isEqualTo(3)
+    }
+
+    @Test
+    fun findMemberLazyTest() {
+        //given
+        //member1 -> teamA
+        //member2 -> teamB
+        val teamA = Team("teamA")
+        val teamB = Team("teamB")
+        teamRepo.save(teamA)
+        teamRepo.save(teamB)
+
+        val member1 = Member("member1", 10, teamA)
+        val member2 = Member("member2", 10, teamB)
+        memberRepo.save(member1)
+        memberRepo.save(member2)
+
+        em.flush()
+        em.clear()
+
+        //when
+        val members = memberRepo.findGraphBy()
+
+        //then
+        for(member in members){
+            println("member = ${member.username} ${member.age}")
+            println("member.teamClass = ${member.team?.javaClass?:"null"}")
+            println("member.team = ${member.team?.name?:"null"}")
+        }
     }
 }

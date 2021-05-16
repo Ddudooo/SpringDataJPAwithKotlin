@@ -2,7 +2,9 @@ package study.springdatakt.repo
 
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import study.springdatakt.dto.MemberDto
@@ -33,4 +35,14 @@ interface MemberRepo: JpaRepository<Member, Long> {
     fun findOptionalMemberByUsername(username: String): Optional<Member>
 
     fun findByAge(age:Int, pageable: Pageable) : Page<Member>
+
+    @Modifying(clearAutomatically = true)
+    @Query("update Member m set m.age = m.age +1 where m.age >= :age")
+    fun bulkAgePlus(@Param("age") age :Int) : Int
+
+    @Query("select m from Member m left join fetch m.team")
+    fun findMemberFetchJoin():List<Member>
+
+    @EntityGraph(attributePaths = ["team"])
+    fun findGraphBy() : List<Member>
 }

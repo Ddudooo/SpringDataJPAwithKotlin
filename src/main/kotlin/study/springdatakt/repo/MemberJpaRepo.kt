@@ -60,4 +60,10 @@ class MemberJpaRepo(
             .setParameter("age",age)
             .singleResult
     }
+
+    fun bulkAgePlus(age :Int) : Int {
+        return em.createQuery("update Member m set m.age = m.age +1 where m.age >= :age")
+            .setParameter("age", age)
+            .executeUpdate()
+    }
 }
