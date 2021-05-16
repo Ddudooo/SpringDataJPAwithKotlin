@@ -149,4 +149,16 @@ internal class MemberRepoTest {
             assertThat(member.username).isIn("AAA","BBB")
         }
     }
+
+    @Test
+    fun testQueryReturnType() {
+        val member1 = Member("AAA", 10)
+        val member2 = Member("BBB",20)
+        memberRepo.save(member1)
+        memberRepo.save(member2)
+
+        //val findListByUsername = memberRepo.findListByUsername("AAA")
+        //val findMemberByUsername = memberRepo.findMemberByUsername("AAA")
+        val findOptionalMemberByUsername = memberRepo.findOptionalMemberByUsername("AAA")
+    }
 }

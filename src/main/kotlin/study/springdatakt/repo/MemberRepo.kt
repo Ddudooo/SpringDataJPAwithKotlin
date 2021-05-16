@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import study.springdatakt.dto.MemberDto
 import study.springdatakt.entity.Member
+import java.util.*
 
 interface MemberRepo: JpaRepository<Member, Long> {
     fun findByUsernameAndAgeGreaterThan(username :String, age: Int) :List<Member>
@@ -24,4 +25,8 @@ interface MemberRepo: JpaRepository<Member, Long> {
 
     @Query("select m from Member m where m.username in :names")
     fun findByNames(@Param("names") names: Collection<String>):List<Member>
+
+    fun findListByUsername(username:String): List<Member>
+    fun findMemberByUsername(username: String):Member
+    fun findOptionalMemberByUsername(username: String): Optional<Member>
 }
