@@ -1,9 +1,11 @@
 package study.springdatakt.entity
 
 import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.annotation.Rollback
 import org.springframework.transaction.annotation.Transactional
+import study.springdatakt.repo.MemberRepo
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 
@@ -12,6 +14,9 @@ import javax.persistence.PersistenceContext
 internal class MemberTest{
     @PersistenceContext
     lateinit var em : EntityManager
+
+    @Autowired
+    lateinit var memberRepo: MemberRepo
 
     @Test
     @Rollback(false)
@@ -43,5 +48,27 @@ internal class MemberTest{
             println("member = ${member.username} ${member.age}")
             println("-> member.team = ${member.team?.name?:"null value"}")
         }
+    }
+
+    @Test
+    fun jpaEventBaseEntityTest() {
+        //given
+        val member = Member("member1")
+        memberRepo.save(member) //@PrePersist
+
+        Thread.sleep(100L)
+        member.username = "member2"
+
+        em.flush()
+        em.clear()
+
+        //when
+        val findMember = memberRepo.findById(member.id!!).get()
+
+        //then
+        println("findMember.createdDate = ${findMember.createdDate?:"null"}")
+        println("findMember.updatedDate = ${findMember.updatedDate?:"null"}")
+        println("findMember.createdBy = ${findMember.createdBy?:"null"}")
+        println("findMember.modifiedBy = ${findMember.lastModifiedBy?:"null"}")
     }
 }

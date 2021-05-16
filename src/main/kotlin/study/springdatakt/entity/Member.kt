@@ -17,7 +17,7 @@ import javax.persistence.NamedQuery
     query = "select m from Member m where m.username = :username"
 )
 @NamedEntityGraph(name= "Member.all", attributeNodes = [NamedAttributeNode("team")])
-class Member(username : String, age: Int=0) {
+class Member(username : String, age: Int=0) : BaseEntity() {
     @Id
     @GeneratedValue
     @Column(name = "member_id")
