@@ -85,4 +85,26 @@ internal class MemberJpaRepoTest {
             assertThat(member.username).isEqualTo("AAA")
         }
     }
+
+    @Test
+    fun testPaging(){
+        //given
+        memberJpaRepo.save(Member("member1", 10))
+        memberJpaRepo.save(Member("member2", 10))
+        memberJpaRepo.save(Member("member3", 10))
+        memberJpaRepo.save(Member("member4", 10))
+        memberJpaRepo.save(Member("member5", 10))
+
+        val age = 10
+        val offset = 0
+        val limit = 3
+
+        //when
+        val content = memberJpaRepo.findByPage(age, offset, limit)
+        val total = memberJpaRepo.totalCount(age)
+
+        //then
+        assertThat(content.size).isEqualTo(3)
+        assertThat(total).isEqualTo(5)
+    }
 }
