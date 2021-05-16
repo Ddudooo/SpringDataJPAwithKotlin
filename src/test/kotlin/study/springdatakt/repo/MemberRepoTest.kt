@@ -84,4 +84,19 @@ internal class MemberRepoTest {
             assertThat(member.username).isEqualTo("AAA")
         }
     }
+
+    @Test
+    fun testQuery() {
+        val member1 = Member("AAA", 10)
+        val member2 = Member("BBB",20)
+        memberRepo.save(member1)
+        memberRepo.save(member2)
+
+        val result = memberRepo.findUser("AAA",10)
+
+        for(member in result){
+            assertThat(member.username).isEqualTo("AAA")
+            assertThat(member.age).isEqualTo(10)
+        }
+    }
 }
