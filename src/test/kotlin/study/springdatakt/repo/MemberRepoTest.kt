@@ -241,4 +241,29 @@ internal class MemberRepoTest {
             println("member.team = ${member.team?.name?:"null"}")
         }
     }
+
+    @Test
+    fun testQueryHint() {
+        //given
+        val saved = memberRepo.save(Member("member1", 10))
+        em.flush()
+        em.clear()
+
+        //when
+        val findMember = memberRepo.findReadOnlyByUsername("member1")
+        findMember.username = "member2"
+
+        em.flush()
+    }
+
+    @Test
+    fun testLock() {
+        //given
+        val saved = memberRepo.save(Member("member1", 10))
+        em.flush()
+        em.clear()
+
+        //when
+        val findMember = memberRepo.findLockByUsername("member1")
+    }
 }
