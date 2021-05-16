@@ -33,4 +33,17 @@ class MemberJpaRepo(
     }
 
     fun delete(member :Member) = em.remove(member)
+
+    fun findByUsernameAndAgeGreaterThan(username:String, age :Int) : List<Member> {
+        return em.createQuery("select m from Member m where m.username = :username and m.age > :age", Member::class.java)
+            .setParameter("username", username)
+            .setParameter("age", age)
+            .resultList
+    }
+
+    fun findByUsername(username: String) : MutableList<Member> {
+        return em.createNamedQuery("Member.findByUsername", Member::class.java)
+            .setParameter("username", username)
+            .resultList
+    }
 }

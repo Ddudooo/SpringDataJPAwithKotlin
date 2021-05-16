@@ -7,8 +7,13 @@ import javax.persistence.GeneratedValue
 import javax.persistence.Id
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
+import javax.persistence.NamedQuery
 
 @Entity
+@NamedQuery(
+    name = "Member.findByUsername",
+    query = "select m from Member m where m.username = :username"
+)
 class Member(username : String, age: Int=0) {
     @Id
     @GeneratedValue

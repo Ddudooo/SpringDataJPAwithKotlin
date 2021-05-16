@@ -55,4 +55,34 @@ internal class MemberJpaRepoTest {
         val deleteCount = memberJpaRepo.count()
         assertThat(deleteCount).isEqualTo(0)
     }
+
+    @Test
+    fun findByUsernameAndAgeGreaterThanTest(){
+        val member1 = Member("AAA",10)
+        val member2 = Member("AAA", 20)
+        memberJpaRepo.save(member1)
+        memberJpaRepo.save(member2)
+
+        val result =
+            memberJpaRepo.findByUsernameAndAgeGreaterThan("AAA", 15)
+
+        for(member in result){
+            assertThat(member.username).isEqualTo("AAA")
+            assertThat(member.age).isGreaterThan(15)
+        }
+    }
+
+    @Test
+    fun testNamedQuery() {
+        val member1 = Member("AAA", 10)
+        val member2 = Member("BBB",20)
+        memberJpaRepo.save(member1)
+        memberJpaRepo.save(member2)
+
+        val result = memberJpaRepo.findByUsername("AAA")
+
+        for(member in result){
+            assertThat(member.username).isEqualTo("AAA")
+        }
+    }
 }
