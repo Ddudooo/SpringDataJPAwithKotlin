@@ -4,7 +4,10 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.transaction.annotation.Transactional
+import study.springdatakt.dto.MemberDto
 import study.springdatakt.entity.Member
 import study.springdatakt.entity.Team
 
@@ -160,5 +163,27 @@ internal class MemberRepoTest {
         //val findListByUsername = memberRepo.findListByUsername("AAA")
         //val findMemberByUsername = memberRepo.findMemberByUsername("AAA")
         val findOptionalMemberByUsername = memberRepo.findOptionalMemberByUsername("AAA")
+    }
+
+    @Test
+    fun testPaging(){
+        //given
+        memberRepo.save(Member("member1", 10))
+        memberRepo.save(Member("member2", 10))
+        memberRepo.save(Member("member3", 10))
+        memberRepo.save(Member("member4", 10))
+        memberRepo.save(Member("member5", 10))
+
+        val age = 10
+        val pageable = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "username"))
+
+        //when
+        val page = memberRepo.findByAge(age, pageable)
+        //편하게 DTO 변환
+        //page.map{ MemberDto(it.id!!, it.username, "") }
+
+        //then
+        assertThat(page.content.size).isEqualTo(3)
+        assertThat(page.totalElements).isEqualTo(5)
     }
 }
