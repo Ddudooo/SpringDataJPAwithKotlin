@@ -135,4 +135,18 @@ internal class MemberRepoTest {
             assertThat(dto.teamName).isEqualTo("teamA")
         }
     }
+
+    @Test
+    fun testQueryList(){
+        val member1 = Member("AAA", 10)
+        val member2 = Member("BBB",20)
+        memberRepo.save(member1)
+        memberRepo.save(member2)
+
+        val result = memberRepo.findByNames(listOf("AAA","BBB"))
+
+        for(member in result){
+            assertThat(member.username).isIn("AAA","BBB")
+        }
+    }
 }
